@@ -23,15 +23,19 @@ class Main extends Component {
         };
     }
     componentDidMount () {
-        return fetch('/')
-            .then((response) => JSON.parse(response))
+        return fetch('task')
+            .then((response) => response.json())
             .then(responseJson => {
                 console.log(responseJson)
-                this.setState({
+                const taskProps = this.state.taskProps
+                taskProps.push({
                     id: responseJson.key,
                     name: responseJson.name,
                     isCompleted: responseJson.isCompleted
-                })
+                });
+                this.setState({
+                    taskProps
+                });
             })
             .catch((error) => {
                 console.error(error);
@@ -86,11 +90,9 @@ class Main extends Component {
             <section>
                 <div className="container">
                     <h1> Todo List</h1>
-                    <p>
-                        <InputBox 
-                            createTask={this.createTask.bind(this)}
-                        />
-                    </p>
+                    <InputBox 
+                        createTask={this.createTask.bind(this)}
+                    />
                 </div>
             </section>
             <div className='ablum py-5 bg-light'>

@@ -16,7 +16,7 @@ class InputBox extends Component {
     render () {
         return (
             <form onSubmit={this.handleCreate.bind(this)} className='card p-2'> 
-                <div class='input-group'>
+                <div className='input-group'>
                     <input type='text' className='form-control' placeholder='What do I need to do?' ref="createInput"/>
                     <button type='submit' className="btn btn-primary" > Add task </button>
                 </div>
