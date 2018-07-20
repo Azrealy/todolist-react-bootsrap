@@ -83,6 +83,18 @@ class Main extends Component {
             taskProps
         })
     }
+    updateTask(taskId, taskName) {
+        var taskProps = this.state.taskProps;
+        for (let i in taskProps) {
+            if (taskProps[i].id === taskId) {
+                taskProps[i].name =  taskName
+                break
+            };
+        }
+        this.setState({
+            taskProps
+        })
+    }
 
     render () {
      return (
@@ -101,6 +113,7 @@ class Main extends Component {
                         taskProps={this.state.taskProps} 
                         deleteTask={this.deleteTask.bind(this)}
                         completeTask={this.completeTask.bind(this)}
+                        updateTask={this.updateTask.bind(this)}
                     />
                 </div>
             </div>

@@ -17,7 +17,8 @@ class ItemsList extends Component {
                             name={taskProp.name}
                             isCompleted={taskProp.isCompleted} 
                             deleteTask={this.props.deleteTask}
-                            completeTask={this.props.completeTask}/>
+                            completeTask={this.props.completeTask}
+                            updateTask={this.props.updateTask}/>
                     )
                 })
             }
