@@ -6,7 +6,7 @@ class Todo extends Component {
         super(props);
         this.state = {
             isUpdated: true,
-            inputValue: this.props.text
+            inputValue: this.props.todo.text
         }
     }
     static propTypes = {
@@ -27,7 +27,7 @@ class Todo extends Component {
         })
     }
     handleUpdate() {
-        this.props.editTodo(this.props.id, this.state.inputValue)
+        this.props.editTodo(this.props.todo.id, this.state.inputValue)
         this.setState({
             isUpdated: true
         })
@@ -36,10 +36,11 @@ class Todo extends Component {
         this.setState({ isUpdated: true, inputValue: this.props.todo.text })
     }
     showTask() {
-        const { todo, toggleTodo, deleteTodo, editTodo } = this.props
+        const { todo, toggleTodo, deleteTodo } = this.props
+        console.log(todo)
         var text = '';
         var button = '';
-        if (todo.isCompleted) {
+        if (todo.completed) {
             text = <p className='card-text'>
                 <s onClick={this.handleEdit.bind(this)}>{todo.text}</s>
             </p>

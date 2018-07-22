@@ -1,10 +1,14 @@
-const todos = (state = [], action) => {
+const todos = (state = [{
+    id: 0,
+    text: "text",
+    completed: false
+}], action) => {
     switch(action.type) {
         case 'ADD_TODO':
             return [
                 ...state,
                 {
-                    id: action.id,
+                    id: state.reduce((maxId, todo) => Math.max(todo.id, maxId), -1) + 1,
                     text: action.text,
                     completed: false
                 }
