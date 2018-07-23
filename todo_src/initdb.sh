@@ -26,5 +26,5 @@ DB_HOST=${DB_HOST:=}
 DB_URL="postgres://${DB_USER_NAME}:${DB_USER_PASS}@${DB_HOST}/${DB_NAME}"
 
 echo "create tables into '${DB_NAME}'..."
-psql ${DB_URL} -f ${SCRIPT_DIR}/init_tables.sql -v "schema=public"
+psql ${DB_URL} -f ${SCRIPT_DIR}/init_table.sql -v "schema=public"
 
