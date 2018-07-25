@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 from datebase import Model
+import argparse
+import sys
 
 class Todo(Model):
     def __init__(self, data_file):
         values = ['id int NOT NULL',
-               'context TEXT NOT NULL',
-               'completed boolean NOT NULL',
-               'PRIMARY KEY(id)']
+                'context TEXT NOT NULL',
+                'completed boolean NOT NULL',
+                'PRIMARY KEY(id)']
         super(Todo, self).__init__(data_file)
         self.table_name = 'todo_list'
-        self.destory_table()
-        self.create_table(self.table_name, val)
+        self.create_table(self.table_name, values)
     
     def add(self, id, text):
-        self.close(self.insert(self.table_name, id, text, False))
+        cursor = self.insert(self.table_name, id, text, False)
+        cursor.close()
     
     def show(self):
         cursor = self.select_all(self.table_name)
@@ -35,3 +37,20 @@ class Todo(Model):
     def destory_table(self):
         cursor = self.drop_table(self.table_name)
         cursor.close()
+
+
+if __name__ == '__main__':
+    todo = Todo('sql.data')
+    id = sys.argv[1]
+    text = sys.argv[2]
+    print(id, text)
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'integers', metavar='int', type=int, choices=range(10),
+         nargs='+', help='an integer in the range 0..9')
+    parser.add_argument(
+        '--sum', dest='accumulate', action='store_const', const=todo.add(id,text),
+        default=max, help='sum the integers (default: find the max)')
+
+    args = parser.parse_args()
+    print(args.accumulate(args.integers))

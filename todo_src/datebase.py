@@ -16,6 +16,7 @@ class Model(object):
     def __init__(self, data_file):
         self.db = sqlite3.connect(data_file, check_same_thread=False)
         self.data_file = data_file
+
     
     def execute(self, query, values=None, commit=False):
         cursor = self.db.cursor()
