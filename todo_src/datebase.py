@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import sqlite3
+import os
 
 queries = {
     'CREATE_TABLE': 'CREATE TABLE IF NOT EXISTS {} ({})',
-    'INSERT': 'INSERT INTO {} VALUES({})',
+    'SELECT': 'SELECT {} FROM {} WHERE {}',
+    'INSERT': 'INSERT INTO {} ({}) VALUES({})',
     'SELECT_ALL': 'SELECT {} FROM {}',
     'UPDATE': 'UPDATE {} SET {} WHERE {}',
     'DELETE': 'DELETE FROM {} WHERE {}',
@@ -21,7 +23,7 @@ class Model(object):
     def execute(self, query, values=None, commit=False):
         cursor = self.db.cursor()
         if values:
-            print(list(values))
+            #print(list(values))
             cursor.execute(query, list(values))
         else:
             cursor.execute(query)
@@ -34,16 +36,28 @@ class Model(object):
         print(query)
         cursor = self.execute(query, commit=True)
         cursor.close()
-        
-    def insert(self, table_name, *args):
-        query = queries['INSERT'].format(table_name, ','.join('?' for _ in args))
-        print(args)
-        print(query)
-        return self.execute(query, args, commit=True)
+
+    def select(self, table_name, **kwargs):
+        conds = ' and '.join(['{}=?'.format(k) for k in kwargs])
+        values = [kwargs[k] for k in kwargs]
+        query = queries['SELECT'].format('*', table_name, conds)
+        #print(query)
+        return self.execute(query, values)
+
+    def insert(self, table_name, **kwargs):
+        """
+        'INSERT': 'INSERT INTO {} VALUES({})'
+        """
+        args = ','.join('?' for _ in kwargs)
+        parameter = ','.join([k for k in kwargs])
+        query = queries['INSERT'].format(table_name, parameter, args)
+        values = [kwargs[k] for k in kwargs]
+        #print(query)
+        return self.execute(query, values)
     
     def select_all(self, table_name):
         query = queries['SELECT_ALL'].format('*', table_name)
-        print(query)
+        #print(query)
         return self.execute(query)
     
     def update_item(self, table_name, set_values, **kwargs):
@@ -53,19 +67,19 @@ class Model(object):
         condition_values = [kwargs[k] for k in kwargs]
 
         query = queries['UPDATE'].format(table_name, ', '.join(updates), ' and '.join(condition))
-        print(query)
-        return self.execute(query, update_values + condition_values, commit=True)
+        #print(query)
+        return self.execute(query, update_values + condition_values)
 
     def delete_item(self, table_name, **kwargs):
         condition = ['{}=?'.format(k) for k in kwargs]
         condition_values = [kwargs[k] for k in kwargs]
         query = queries['DELETE'].format(table_name, 'and '.join(condition))
-        print(query)
-        return self.execute(query, condition_values, commit=True)
+        #print(query)
+        return self.execute(query, condition_values)
 
     def drop_table(self, table_name):
         query = queries['DROP_TABLE'].format(table_name)
-        print(query)
+        #print(query)
         return self.execute(query)
         
     def disconnect(self):
