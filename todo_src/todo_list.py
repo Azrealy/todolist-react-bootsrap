@@ -72,12 +72,17 @@ class Todo(Model):
             print('No {} task exist.'.format('completed' if completed else 'incompleted')) 
 
 
-def parse_args(argv):
+def parse_args_aa(argv):
+    print(argv)
     parser = argparse.ArgumentParser(description='Todo list manager')
-    parser.add_argument('-a', '--add',
-		help='Add a task to the todo list')
-    parser.add_argument('--show', action='store_true',
+    parser.add_argument('--show', action='store_true', default=False,
 		help="Show the all task.")
+    # Defined a sub-commands parsers
+    subparsers = parser.add_subparsers(help='sub-command of Todo List manager help')
+    # Create sub-comand od 'add'.
+    parser_add = subparsers.add_parser('add', help='Add a task to the todo list')
+    parser_add.add_argument('context', type=str, help='Add a task using this context.')
+
     parser.add_argument('-d', '--delete', type=int,
 		help='Delete a task from database using its ID.')
     parser.add_argument('-c', '--complete', type=int,
@@ -97,15 +102,15 @@ def dispatch(dict_args, todo):
     for k in dict_args:
         if k == 'init' and dict_args[k]:
             todo.destory_table()
-        if k == 'add' and dict_args[k]:
-            todo.add(dict_args[k])
+        if k == 'context' and dict_args[k]:
             print('Task has been added scucessfully.')
+            todo.add(dict_args[k])
         if k == 'delete' and dict_args[k]:
             todo.delete(dict_args[k])
             print('<{}> task is deleted sucessfully.'.format(dict_args[k]))
         if k == 'complete' and dict_args[k]:
-            todo.update(index=dict_args[k], completed=True)
             print('Task <{}> complete.'.format(dict_args[k]))
+            todo.update(index=dict_args[k], completed=True)
         if k == 'update' and dict_args[k]:
             if len(dict_args[k]) < 2:
                 raise TodoError('Agurments too short.')
@@ -135,14 +140,14 @@ def dispatch(dict_args, todo):
 def main():
     try:
         todo = Todo('sql.data')
-        dict_args = parse_args(sys.argv[1:])
+        dict_args = parse_args_aa(sys.argv[1:])
         dispatch(dict_args, todo)
         todo.db.commit()
 
     except TodoError as e:
         todo.db.rollback()
         print(e)
-    
+
 
 if __name__ == '__main__':
     main()
