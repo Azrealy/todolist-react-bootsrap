@@ -3,17 +3,17 @@ from setuptools import setup
 setup(
 	name='todocli',
 	version='1',
-	py_modules=['sample_todo'],
+	py_modules=['todo.todo', 'todo.datebase'],
 	entry_points={
 		'console_scripts': [
-			'todo = sample_todo:main'
+			'todo = todo.todo:main'
 		]
 	},
 	test_suite='tests',
 
-	author='foobuzz',
-	author_email='dprosium@gmail.com',
+	author='k-fang',
+	author_email='k-fang@com',
 	description='A command line todo list manager',
 	keywords='command line todo list',
-	url='https://github.com/foobuzz/todo'
+	url='https://todo'
 )
