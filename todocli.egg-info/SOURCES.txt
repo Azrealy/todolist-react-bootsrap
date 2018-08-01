@@ -1,6 +1,7 @@
+README.md
 setup.py
 todo/__init__.py
-todo/datebase.py
+todo/model.py
 todo/todo.py
 todocli.egg-info/PKG-INFO
 todocli.egg-info/SOURCES.txt

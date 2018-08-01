@@ -1,6 +1,6 @@
-Metadata-Version: 1.0
+Metadata-Version: 1.2
 Name: todocli
-Version: 1
+Version: 0.0.1
 Summary: A command line todo list manager
 Home-page: https://todo
 Author: k-fang
@@ -9,3 +9,4 @@ License: UNKNOWN
 Description: UNKNOWN
 Keywords: command line todo list
 Platform: UNKNOWN
+Requires-Python: >=3

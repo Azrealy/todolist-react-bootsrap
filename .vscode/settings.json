@@ -4,5 +4,6 @@
         "markdown",
         "latex",
         "plaintext"
-    ]
+    ],
+    "python.pythonPath": "/usr/bin/python3.6"
 }

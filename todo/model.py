@@ -18,21 +18,25 @@ class Model(object):
         """
         DB model class, which use to create/execute
         SQL statement and create connection with DB.
+
+        Parameters
+        ----------
+        data_file : str
+            Name of data file.
         """
-        self.db = sqlite3.connect(data_file, check_same_thread=False)
-        self.data_file = data_file
+        self.conn = sqlite3.connect(data_file)
 
     
     def execute(self, query, values=None, commit=False):
         """
-        Execute SQL statement.
+        Execute SQL query.
 
         Parameters
         ----------
         query : str
-            SQL statement
+            An SQL query
         values : list
-            Values of SQL statement
+            A list, with query parameters
         commit : bool
             Determine if need commit DB
 
@@ -41,20 +45,20 @@ class Model(object):
         cursor : sqlite3.Cursor
             An instance of Cursor object
         """
-        cursor = self.db.cursor()
+        cursor = self.conn.cursor()
         if values:
             cursor.execute(query, list(values))
         else:
             cursor.execute(query)
         if commit:
-            self.db.commit()
+            self.conn.commit()
         return cursor
     
     def create_table(self, table_name, values):
         """
-        Execute create table SQL statement.
+        Execute create table SQL query.
 
-        Example of SQL statement:
+        Example of SQL query:
             CREATE TABLE IF NOT EXISTS table_name (
                 column1 datetype,
                 column2 datetype,
@@ -74,9 +78,9 @@ class Model(object):
 
     def select(self, table_name, **kwargs):
         """
-        Execute select SQL statement.
+        Execute select SQL query.
 
-        Example of SQL statement:
+        Example of SQL query:
             SELECT * FROM table_name;
             WHERE columns1 = ? and columns2 = ? and ..;
 
@@ -92,9 +96,9 @@ class Model(object):
 
     def insert(self, table_name, **kwargs):
         """
-        Execute insert SQL statement.
+        Execute insert SQL query.
 
-        Example of SQL statement:
+        Example of SQL query:
             INSERT INTO table_name (columns1, column2, ...);
             VALUES (?, ?, ...);
 
@@ -109,28 +113,28 @@ class Model(object):
         values = [kwargs[k] for k in kwargs]
         return self.execute(query, values)
     
-    def select_all(self, table_name, option=None):
+    def select_all(self, table_name, option=""):
         """
-        Execute select all SQL statement.
+        Execute select all SQL query.
 
-        Example of SQL statement:
+        Example of SQL query:
             SELECT * FROM table_name (order by id);
 
         Parameters
         ----------
         table_name : str
             Table name
-        option :str
-            Option statement of select all
+        option : str
+            Option query of select all
         """
         query = queries['SELECT_ALL'].format('*', table_name, option)
         return self.execute(query)
     
     def update_item(self, table_name, set_values, **kwargs):
         """
-        Execute update SQL statement.
+        Execute update SQL query.
 
-        Example of SQL statement:
+        Example of SQL query:
             UPDATE table_name
             SET column1 = ?, column2 = ?, ...
             WHERE columns1 = ? and columns2 = ? and ..;
@@ -152,9 +156,9 @@ class Model(object):
 
     def delete_item(self, table_name, **kwargs):
         """
-        Execute delete SQL statement.
+        Execute delete SQL query.
 
-        Example of SQL statement:
+        Example of SQL query:
             DELETE FROM table_name;
             WHERE columns1 = ? and columns2 = ? and ..;
 
@@ -170,9 +174,9 @@ class Model(object):
 
     def drop_table(self, table_name):
         """
-        Execute drop table SQL statement.
+        Execute drop table SQL query.
 
-        Example of SQL statement:
+        Example of SQL query:
             DROP TABLE table_name;
 
         Parameters

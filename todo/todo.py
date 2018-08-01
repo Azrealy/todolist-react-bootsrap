@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datebase import Model
+from .model import Model
 import argparse
 import sys
 from functools import wraps
@@ -12,7 +12,7 @@ class RecordIsNotFoundError(Exception):
     """
     pass
 
-def check_task_exits(method):
+def check_task_exist(method):
     """
     Decorator for TodoList class methods that check whether exists
     the task.
@@ -41,23 +41,12 @@ class TodoList(Model):
         """
         Inherit the model class
         """
-        super(TodoList, self).__init__(data_file)
-        self.table_name = 'todo_list'
-        self._create_todo_list_table()
-
-    def _create_todo_list_table(self):
-        """
-        Create todo list table when table
-        not exist.
-        """
         values = ['id INTEGER NOT NULL PRIMARY KEY',
                   'context TEXT NOT NULL',
                   'completed boolean NOT NULL']
-        try:
-            # Use to check whether todo list table exist.
-            self._get_greatest_id()
-        except OperationalError:
-            self.create_table(self.table_name, values)
+        super(TodoList, self).__init__(data_file)
+        self.table_name = 'todo_list'
+        self.create_table(self.table_name, values)
         
 
     def _get_greatest_id(self):
@@ -126,7 +115,7 @@ class TodoList(Model):
         cursor = self.insert(self.table_name, id=id, context=context, completed = False)
         cursor.close()
 
-    @check_task_exits
+    @check_task_exist
     def complete_task_by_id(self, index):
         """
         Change the task status using task ID
@@ -142,7 +131,7 @@ class TodoList(Model):
                                   id=index)
         cursor.close()
 
-    @check_task_exits
+    @check_task_exist
     def update_task_by_id(self, index, context):
         """
         Update the task context using task ID
@@ -160,7 +149,7 @@ class TodoList(Model):
                                   id=index)
         cursor.close()
 
-    @check_task_exits
+    @check_task_exist
     def delete_task_by_id(self, index):
         """
         Delete the task using task ID
@@ -332,12 +321,15 @@ def main():
     """
     try:
         todo_list = TodoList('sql.data')
-        dict_args = parse_args(sys.argv[1:])
-        execute_sql_by_command(dict_args, todo_list)
-        todo_list.db.commit()
+        if len(sys.argv[1:]) < 1:
+            print('too few arguments.')
+        else:
+            dict_args = parse_args(sys.argv[1:])
+            execute_sql_by_command(dict_args, todo_list)
+            todo_list.conn.commit()
 
     except RecordIsNotFoundError as e:
-        todo_list.db.rollback()
+        todo_list.conn.rollback()
         print(e)
 
 
